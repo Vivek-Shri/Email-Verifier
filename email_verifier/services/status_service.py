@@ -20,11 +20,8 @@ def get_status(signals: dict, score: int) -> dict:
             status = "unknown"
             
     # 2. Positive Check (Valid if deliverable and score is high)
-    elif score >= 70 and signals.get("is_deliverable"):
-        if signals.get("is_catch_all") and not signals.get("is_mailbox_verified"):
-            status = "catch_all"
-        else:
-            status = "valid"
+    elif score >= 70 and signals.get("is_deliverable") and not signals.get("is_catch_all"):
+        status = "valid"
         
     # 3. Informational Flags (If score is not high enough to be 'valid')
     elif signals.get("has_inbox_full"):
