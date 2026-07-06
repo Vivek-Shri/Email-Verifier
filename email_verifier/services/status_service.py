@@ -20,7 +20,7 @@ def get_status(signals: dict, score: int) -> dict:
             status = "unknown"
             
     # 2. Positive Check (Valid if deliverable and score is high)
-    elif score >= 70 and signals.get("is_deliverable"):
+    elif score >= 70 and signals.get("is_deliverable") and not signals.get("is_catch_all"):
         # This handles the "Relay False Positive" by trusting deliverability 
         # for IDs with high heuristic scores (non-gibberish, not on blacklists, etc.)
         status = "valid"
