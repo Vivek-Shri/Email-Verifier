@@ -75,6 +75,30 @@ async def _smtp_check_with_retry(email, mx_host) -> SMTPResult:
             
     return last_res or SMTPResult()
 
+def _vrfy_check_sync(email, target_host) -> dict:
+    try:
+        server = smtplib.SMTP(target_host, 25, timeout=config.SMTP_TIMEOUT)
+        server.ehlo(config.SMTP_HELO_DOMAIN)
+        try:
+            server.starttls()
+            server.ehlo(config.SMTP_HELO_DOMAIN)
+        except Exception:
+            pass
+        try:
+            code, msg = server.docmd("vrfy", email)
+            server.quit()
+            return {"supported": True, "confirmed": code in [250, 251], "code": code}
+        except Exception:
+            try:
+                server.docmd("expn", email)
+                server.quit()
+                return {"supported": True, "confirmed": True, "code": 250}
+            except Exception:
+                server.quit()
+                return {"supported": True, "confirmed": False, "code": None}
+    except Exception:
+        return {"supported": False, "confirmed": None, "code": None}
+
 async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
     res = {
         "can_connect_smtp": False,
@@ -82,6 +106,7 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
         "has_inbox_full": False,
         "is_disabled": False,
         "is_catch_all": is_known_catch_all,
+        "is_mailbox_verified": None,
         "smtp_status": "unknown",
         "smtp_error_note": None
     }
@@ -95,8 +120,6 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
     if not is_known_catch_all:
         domain = email.split('@')[1]
         
-        # Heuristic: Skip catch-all probe for trusted non-catchall domains (like Gmail)
-        # to prevent SMTP relays from giving false-positives.
         if domain not in config.NEVER_CATCH_ALL_DOMAINS:
             fake_user = f"zz9xfake_{random_8_chars()}"
             fake_email = f"{fake_user}@{domain}"
@@ -130,5 +153,15 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
             res["is_deliverable"] = False
         elif code in [421, 450, 451]:
             res["smtp_status"] = "temporary_failure"
+    
+    # Step 2: For catch-all, try additional inbox verification via VRFY/EXPN
+    if res.get("is_catch_all") and primary_host and res.get("is_deliverable"):
+        vrfy_res = await asyncio.to_thread(_vrfy_check_sync, email, primary_host)
+        if vrfy_res.get("supported"):
+            res["is_mailbox_verified"] = bool(vrfy_res.get("confirmed"))
+        else:
+            res["is_mailbox_verified"] = None
+    elif not res.get("is_catch_all") and res.get("is_deliverable"):
+        res["is_mailbox_verified"] = True
     
     return res

@@ -10,6 +10,7 @@ def calculate(signals: dict) -> dict:
     score += 5 if not signals.get("is_disposable") else 0
     score += 5 if not signals.get("is_role_account") else 0
     score += 5 if not signals.get("is_catch_all") else 0
+    score += 15 if signals.get("is_mailbox_verified") else 0
     
     # NEGATIVE
     score -= 2 if signals.get("is_free_email") else 0

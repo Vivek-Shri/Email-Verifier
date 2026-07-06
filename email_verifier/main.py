@@ -64,7 +64,8 @@ def build_error_result(raw_email, error_str, start_time) -> EmailResult:
         "gibberish_score": 0,
         "verification_time_ms": int((time.time() - start_time) * 1000),
         "checked_at": datetime.now(timezone.utc).isoformat(),
-        "error_note": error_str
+        "error_note": error_str,
+        "is_mailbox_verified": None
     }
     return EmailResult(**res)
 
@@ -106,12 +107,13 @@ async def verify_one_email(raw_email: str) -> EmailResult:
                 "is_deliverable": status_to_force == "valid",
                 "is_disabled": status_to_force == "disabled",
                 "is_spamtrap": status_to_force == "spam_trap",
-                "is_free_email": False,
+                 "is_free_email": False,
                 "is_gibberish": False,
                 "gibberish_score": 0,
                 "verification_time_ms": 1,
                 "checked_at": datetime.now(timezone.utc).isoformat(),
-                "error_note": f"System Test: {status_to_force}"
+                "error_note": f"System Test: {status_to_force}",
+                "is_mailbox_verified": status_to_force != "catch_all"
             }
             return EmailResult(**res)
     # ---------------------------------------------------------
@@ -222,7 +224,8 @@ async def verify_one_email(raw_email: str) -> EmailResult:
             "gibberish_score": gibber["gibberish_score"],
             "verification_time_ms": int((time.time() - start) * 1000),
             "checked_at": datetime.now(timezone.utc).isoformat(),
-            "error_note": smtp.get("smtp_error_note") or gibber.get("gibberish_note") or dns.get("dns_error")
+            "error_note": smtp.get("smtp_error_note") or gibber.get("gibberish_note") or dns.get("dns_error"),
+            "is_mailbox_verified": smtp.get("is_mailbox_verified")
         }
         return EmailResult(**res)
         

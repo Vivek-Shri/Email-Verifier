@@ -26,6 +26,7 @@ class EmailResult(BaseModel):
     verification_time_ms: int
     checked_at: str
     error_note: Optional[str] = None
+    is_mailbox_verified: Optional[bool] = None
 
 class BulkSummary(BaseModel):
     total: int
