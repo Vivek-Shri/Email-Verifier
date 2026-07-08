@@ -113,7 +113,6 @@ async def is_disposable(domain: str, mx_hosts: list) -> bool:
                 return True
         except Exception:
             pass
-        return False
 
     try:
         whois_data = await _fetch_whois(domain)
@@ -121,6 +120,9 @@ async def is_disposable(domain: str, mx_hosts: list) -> bool:
             return True
     except Exception:
         pass
+
+    if _is_disposable_by_api(domain):
+        return True
 
     return False
 
@@ -132,6 +134,22 @@ def _looks_randomly_generated(domain: str) -> bool:
 
     entropy = _shannon_entropy(name)
     return entropy >= 2.5
+
+
+def _is_disposable_by_api(domain: str) -> bool:
+    if not getattr(config, "DISPOSABLE_API_FALLBACK_ENABLED", False):
+        return False
+    try:
+        url = getattr(config, "DISPOSABLE_API_FALLBACK_URL", "")
+        if not url:
+            return False
+        resp = requests.get(url, params={"email": f"test@{domain}"}, timeout=5)
+        if resp.status_code == 200:
+            data = resp.json()
+            return str(data.get("disposable", "false")).lower() == "true"
+    except Exception:
+        pass
+    return False
 
 
 async def _fetch_whois(domain: str) -> dict:

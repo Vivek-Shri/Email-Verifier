@@ -78,6 +78,11 @@ CATCH_ALL_KNOWN_DOMAINS = [
 DYNAMIC_DISPOSABLE_LIST_ENABLED = os.environ.get("DYNAMIC_DISPOSABLE_LIST_ENABLED", "false").lower() == "true"
 DYNAMIC_DISPOSABLE_LIST_URL = "https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json"
 
+# Fallback API for domains not caught by heuristics.
+# Uses debounce.io free API (no key required). Set to True to enable.
+DISPOSABLE_API_FALLBACK_ENABLED = os.environ.get("DISPOSABLE_API_FALLBACK_ENABLED", "false").lower() == "true"
+DISPOSABLE_API_FALLBACK_URL = "https://disposable.debounce.io/"
+
 # Domains that we know are NOT catch-all (to prevent relay false positives)
 NEVER_CATCH_ALL_DOMAINS = [
     "gmail.com", "googlemail.com", "icloud.com",
