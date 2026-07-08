@@ -1,6 +1,7 @@
 import asyncio
 import math
 import os
+import time
 import requests
 import whois
 from collections import Counter
@@ -44,6 +45,8 @@ _DISPOSABLE_MX_KEYWORDS = {
 }
 
 _DYNAMIC_DISPOSABLE_SET: set = set()
+_LAST_FETCHED: float = 0
+CACHE_TTL_SECONDS = 86400
 
 
 def _shannon_entropy(s: str) -> float:
@@ -75,17 +78,21 @@ def _is_free_email_by_mx(mx_hosts: list) -> bool:
 def load_dynamic_disposable_list() -> set:
     if not getattr(config, "DYNAMIC_DISPOSABLE_LIST_ENABLED", False):
         return set()
-    if _DYNAMIC_DISPOSABLE_SET:
+
+    now = time.time()
+    if _DYNAMIC_DISPOSABLE_SET and (now - _LAST_FETCHED) < CACHE_TTL_SECONDS:
         return _DYNAMIC_DISPOSABLE_SET
+
     try:
         url = getattr(config, "DYNAMIC_DISPOSABLE_LIST_URL", "")
         if not url:
-            return set()
+            return _DYNAMIC_DISPOSABLE_SET
         resp = requests.get(url, timeout=10)
         if resp.status_code == 200:
-            domains = resp.json()
-            if isinstance(domains, list):
-                _DYNAMIC_DISPOSABLE_SET.update(d.lower() for d in domains if isinstance(d, str))
+            domains = resp.text.splitlines()
+            _DYNAMIC_DISPOSABLE_SET.clear()
+            _DYNAMIC_DISPOSABLE_SET.update(d.strip().lower() for d in domains if d.strip())
+            _LAST_FETCHED = now
     except Exception:
         pass
     return _DYNAMIC_DISPOSABLE_SET

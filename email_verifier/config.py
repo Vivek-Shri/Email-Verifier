@@ -73,10 +73,9 @@ CATCH_ALL_KNOWN_DOMAINS = [
 ]
 
 # Dynamic disposable domain list (downloaded from public sources at startup)
-# Set to True to fetch the latest list from GitHub on each app start.
-# Set to False to rely only on heuristic detection.
-DYNAMIC_DISPOSABLE_LIST_ENABLED = os.environ.get("DYNAMIC_DISPOSABLE_LIST_ENABLED", "false").lower() == "true"
-DYNAMIC_DISPOSABLE_LIST_URL = "https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json"
+# Uses a maintained public blocklist (~74k domains). Refreshes every 24h.
+DYNAMIC_DISPOSABLE_LIST_ENABLED = True
+DYNAMIC_DISPOSABLE_LIST_URL = "https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.txt"
 
 # Fallback API for domains not caught by heuristics.
 # Uses debounce.io free API (no key required). Set to True to enable.
