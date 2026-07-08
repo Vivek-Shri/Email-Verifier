@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 import asyncio
 import time
 import os
@@ -24,6 +25,10 @@ from utils import file_utils
 import config
 
 app = FastAPI(title="Email Verifier API", version=config.APP_VERSION)
+
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.isdir(frontend_path):
+    app.mount("/frontend", StaticFiles(directory=frontend_path), name="frontend")
 
 app.add_middleware(
     CORSMiddleware,
@@ -346,3 +351,10 @@ async def health_check():
         "version": config.APP_VERSION,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+
+@app.get("/")
+async def serve_frontend():
+    index = os.path.join(frontend_path, "index.html")
+    if os.path.exists(index):
+        return FileResponse(index)
+    return JSONResponse({"message": "Email Verifier API running. Frontend not found."})

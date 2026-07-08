@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verifier</title>
+    <link rel="stylesheet" href="/frontend/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Email Verifier</h1>
+            <p>Verify email addresses instantly with SMTP-level accuracy</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>Single Verification</h2>
+                <form id="verifyForm">
+                    <div class="input-group">
+                        <input 
+                            type="email" 
+                            id="emailInput" 
+                            placeholder="Enter email address..." 
+                            required
+                            autocomplete="email"
+                        >
+                        <button type="submit" id="verifyBtn">
+                            <span id="btnText">Verify</span>
+                            <span id="btnLoader" class="loader hidden"></span>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="resultArea" class="result-area hidden">
+                    <div class="result-card" id="resultCard">
+                        <div class="result-header">
+                            <div class="result-icon" id="resultIcon"></div>
+                            <div class="result-title">
+                                <h3 id="resultStatus">—</h3>
+                                <span class="score-badge" id="resultScore">0/100</span>
+                            </div>
+                        </div>
+
+                        <div class="result-body">
+                            <div class="result-section">
+                                <h4>What does "<span id="resultStatusText">—</span>" mean?</h4>
+                                <p id="resultDescription">—</p>
+                            </div>
+
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <span class="label">can_connect_smtp</span>
+                                    <span class="value" id="val_can_connect_smtp">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">mx_accepts_mail</span>
+                                    <span class="value" id="val_mx_accepts_mail">—</span>
+                                </div>
+                                <div class="result-item full-width">
+                                    <span class="label">mx_records</span>
+                                    <span class="value mono" id="val_mx_records">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">has_inbox_full</span>
+                                    <span class="value" id="val_has_inbox_full">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_disabled</span>
+                                    <span class="value" id="val_is_disabled">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_deliverable</span>
+                                    <span class="value" id="val_is_deliverable">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_role_account</span>
+                                    <span class="value" id="val_is_role_account">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_catch_all</span>
+                                    <span class="value" id="val_is_catch_all">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_disposable</span>
+                                    <span class="value" id="val_is_disposable">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_spamtrap</span>
+                                    <span class="value" id="val_is_spamtrap">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_valid_syntax</span>
+                                    <span class="value" id="val_is_valid_syntax">—</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="label">is_safe_to_send</span>
+                                    <span class="value" id="val_is_safe_to_send">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="errorArea" class="error-area hidden">
+                    <p id="errorText"></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/frontend/app.js"></script>
+</body>
+</html>
