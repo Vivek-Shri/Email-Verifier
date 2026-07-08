@@ -17,7 +17,7 @@ def calculate(signals: dict) -> dict:
 
     # NEGATIVE
     score -= 2 if signals.get("is_free_email") else 0
-    score -= 20 if signals.get("is_catch_all") else 0
+    score -= 20 if signals.get("is_catch_all") and not signals.get("is_mailbox_verified") else 0
     score -= 10 if signals.get("has_inbox_full") else 0
     score -= 30 if signals.get("is_disposable") else 0
     score -= 50 if signals.get("is_disabled") else 0

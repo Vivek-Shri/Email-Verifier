@@ -23,7 +23,7 @@ def get_status(signals: dict, score: int) -> dict:
             status = "unknown"
             
     # 2. Positive Check (safe if deliverable and score is high)
-    elif score >= 70 and signals.get("is_deliverable") and not signals.get("is_catch_all"):
+    elif score >= 70 and signals.get("is_deliverable"):
         status = "safe"
         
     # 3. Informational Flags (If score is not high enough to be 'safe')

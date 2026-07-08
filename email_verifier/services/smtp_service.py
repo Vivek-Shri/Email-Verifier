@@ -130,7 +130,7 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
         elif code in [421, 450, 451]:
             res["smtp_status"] = "temporary_failure"
     
-    if res.get("is_deliverable") and not res.get("is_catch_all"):
+    if res.get("is_deliverable"):
         res["is_mailbox_verified"] = True
     elif res.get("is_disabled") or res.get("smtp_status") == "blocked":
         res["is_mailbox_verified"] = False
