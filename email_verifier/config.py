@@ -72,6 +72,12 @@ CATCH_ALL_KNOWN_DOMAINS = [
     "hotmail.com", "outlook.com", "live.com"
 ]
 
+# Dynamic disposable domain list (downloaded from public sources at startup)
+# Set to True to fetch the latest list from GitHub on each app start.
+# Set to False to rely only on heuristic detection.
+DYNAMIC_DISPOSABLE_LIST_ENABLED = os.environ.get("DYNAMIC_DISPOSABLE_LIST_ENABLED", "false").lower() == "true"
+DYNAMIC_DISPOSABLE_LIST_URL = "https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json"
+
 # Domains that we know are NOT catch-all (to prevent relay false positives)
 NEVER_CATCH_ALL_DOMAINS = [
     "gmail.com", "googlemail.com", "icloud.com",

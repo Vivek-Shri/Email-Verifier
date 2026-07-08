@@ -1,11 +1,31 @@
 import asyncio
 import math
+import os
+import requests
 import whois
 from collections import Counter
 from datetime import datetime, timezone
 
 import config
 
+
+_FREE_EMAIL_MX_SUFFIXES = {
+    "google.com", "googlemail.com",
+    "outlook.com", "live.com", "hotmail.com", "msn.com",
+    "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "yahoo.de",
+    "aol.com",
+    "protonmail.com", "proton.me", "protonmail.ch",
+    "zoho.com",
+    "gmx.com", "gmx.net",
+    "tutanota.com",
+    "icloud.com", "me.com", "mac.com",
+    "mail.com", "yandex.com", "yandex.net", "yandex.ru",
+    "qq.com", "foxmail.com", "naver.com",
+    "daum.net", "hanmail.net",
+    "rediffmail.com",
+    "sina.com", "sina.cn",
+    "126.com", "163.com", "yeah.net",
+}
 
 _DISPOSABLE_KEYWORDS = {
     "temp", "disposable", "throwaway", "mailinator", "guerrilla",
@@ -23,11 +43,7 @@ _DISPOSABLE_MX_KEYWORDS = {
     "grr.la", "getairmail", "mytemp", "tempinbox", "throwam"
 }
 
-_WELL_KNOWN_DOMAINS = {
-    "example.com", "example.org", "example.net",
-    "localhost", "invalid",
-    "microsoft.com", "facebook.com", "amazon.com", "apple.com"
-}
+_DYNAMIC_DISPOSABLE_SET: set = set()
 
 
 def _shannon_entropy(s: str) -> float:
@@ -47,12 +63,36 @@ def _matches_mx_keywords(mx_host: str) -> bool:
     return any(kw in host for kw in _DISPOSABLE_MX_KEYWORDS)
 
 
-async def is_disposable(domain: str, mx_hosts: list) -> bool:
-    if domain in _WELL_KNOWN_DOMAINS:
-        return False
+def _is_free_email_by_mx(mx_hosts: list) -> bool:
+    for mx in mx_hosts:
+        mx_lower = mx.lower()
+        for suffix in _FREE_EMAIL_MX_SUFFIXES:
+            if mx_lower == suffix or mx_lower.endswith("." + suffix):
+                return True
+    return False
 
-    free_domains = getattr(config, "FREE_EMAIL_DOMAINS", [])
-    if domain in free_domains:
+
+def load_dynamic_disposable_list() -> set:
+    if not getattr(config, "DYNAMIC_DISPOSABLE_LIST_ENABLED", False):
+        return set()
+    if _DYNAMIC_DISPOSABLE_SET:
+        return _DYNAMIC_DISPOSABLE_SET
+    try:
+        url = getattr(config, "DYNAMIC_DISPOSABLE_LIST_URL", "")
+        if not url:
+            return set()
+        resp = requests.get(url, timeout=10)
+        if resp.status_code == 200:
+            domains = resp.json()
+            if isinstance(domains, list):
+                _DYNAMIC_DISPOSABLE_SET.update(d.lower() for d in domains if isinstance(d, str))
+    except Exception:
+        pass
+    return _DYNAMIC_DISPOSABLE_SET
+
+
+async def is_disposable(domain: str, mx_hosts: list) -> bool:
+    if _is_free_email_by_mx(mx_hosts):
         return False
 
     if _matches_disposable_keywords(domain):
@@ -62,8 +102,18 @@ async def is_disposable(domain: str, mx_hosts: list) -> bool:
         if _matches_mx_keywords(mx_host):
             return True
 
-    if _looks_randomly_generated(domain):
+    dynamic_list = load_dynamic_disposable_list()
+    if domain.lower() in dynamic_list:
         return True
+
+    if _looks_randomly_generated(domain):
+        try:
+            whois_data = await _fetch_whois(domain)
+            if whois_data and _is_recently_registered(whois_data):
+                return True
+        except Exception:
+            pass
+        return False
 
     try:
         whois_data = await _fetch_whois(domain)
@@ -106,3 +156,4 @@ def _is_recently_registered(whois_data: dict, days_threshold: int = 14) -> bool:
     now = datetime.now(timezone.utc)
     age_days = (now - creation_date).days
     return age_days < days_threshold
+
