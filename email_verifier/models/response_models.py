@@ -6,7 +6,7 @@ class EmailResult(BaseModel):
     email: str
     username: str
     domain: str
-    status: str  # valid, invalid, catch_all, role_based, inbox_full, temporary_failure, disposable, disabled, unknown, blocked
+    status: str  # safe, invalid, catch_all, role_account, inbox_full, temporary_failure, disposable, disabled, unknown, blocked, spamtrap
     overall_score: Optional[int]
     is_safe_to_send: bool
     is_valid_syntax: bool
@@ -32,17 +32,17 @@ class BulkSummary(BaseModel):
     total: int
     unique: int
     duplicates_removed: int
-    valid: int
+    safe: int
     invalid: int
     catch_all: int
-    role_based: int
+    role_account: int
     inbox_full: int
     temporary_failure: int
     disposable: int
     disabled: int
     unknown: int
     blocked: int
-    spam_trap: int
+    spamtrap: int
     safe_to_send_count: int
     gibberish_detected: int
     runtime_seconds: float

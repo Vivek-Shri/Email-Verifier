@@ -5,13 +5,13 @@ import time
 BASE_URL = "http://127.0.0.1:8000/api/v1"
 
 TEST_CASES = [
-    ("valid", "valid@test.io"),
+    ("safe", "safe@test.io"),
     ("catch_all", "catch-all@test.io"),
-    ("role_based", "role-based@test.io"),
-    ("spam_trap", "spam-trap@test.io"),
-    ("spam_trap_heuristic", "honeypot-user@gmail.com"), 
-    ("spam_trap_typo", "john@gamil.com"),
-    ("spam_trap_error_fix", "user@gmial.com"),
+    ("role_account", "role-account@test.io"),
+    ("spamtrap", "spam-trap@test.io"),
+    ("spamtrap_heuristic", "honeypot-user@gmail.com"), 
+    ("spamtrap_typo", "john@gamil.com"),
+    ("spamtrap_error_fix", "user@gmial.com"),
     ("inbox_full", "inbox-full@test.io"), 
     ("temporary_failure", "temporary-failure@test.io"),
     ("invalid", "invalid@test.io"),
