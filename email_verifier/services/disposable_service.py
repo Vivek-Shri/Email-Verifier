@@ -76,6 +76,7 @@ def _is_free_email_by_mx(mx_hosts: list) -> bool:
 
 
 def load_dynamic_disposable_list() -> set:
+    global _LAST_FETCHED
     if not getattr(config, "DYNAMIC_DISPOSABLE_LIST_ENABLED", False):
         return set()
 
