@@ -15,6 +15,7 @@ from services import smtp_service
 from services import gibberish_service
 from services import scoring_service
 from services import status_service
+from services import disposable_service
 
 from models.request_models import SingleVerifyRequest, BulkVerifyRequest
 from models.response_models import EmailResult, BulkSummary, PaginationMeta, BulkVerifyResponse
@@ -160,6 +161,13 @@ async def verify_one_email(raw_email: str) -> EmailResult:
         
         # Module 4: DNS / MX Check
         dns = await dns_service.get_mx(parsed["domain"])
+        
+        # Heuristic disposable detection (MX pattern + domain keywords + domain age)
+        is_disposable = await disposable_service.is_disposable(
+            parsed["domain"], dns.get("mx_hosts_list", [])
+        )
+        if is_disposable:
+            lists["is_disposable"] = True
         
         # MX logic from spec
         if not dns.get("mx_accepts_mail") and not dns.get("mx_blocked"):

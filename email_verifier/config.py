@@ -30,17 +30,7 @@ FREE_EMAIL_DOMAINS = [
     "msn.com", "me.com", "mac.com", "googlemail.com", "yahoo.co.uk"
 ]
 
-DISPOSABLE_DOMAINS = [
-    "mailinator.com", "guerrillamail.com", "tempmail.com",
-    "throwam.com", "yopmail.com", "sharklasers.com",
-    "guerrillamailblock.com", "grr.la", "guerrillamail.info",
-    "spam4.me", "trashmail.com", "maildrop.cc", "dispostable.com",
-    "mailnull.com", "spamgourmet.com", "trashmail.me",
-    "tempr.email", "discard.email", "fakeinbox.com",
-    "mailcatch.com", "mytemp.email", "tempinbox.com",
-    "throwaway.email", "getairmail.com", "filzmail.com",
-    "mailnesia.com", "trashmail.at", "yopmail.fr"
-]
+DISPOSABLE_DOMAINS = []
 
 ROLE_ACCOUNTS = [
     "admin", "info", "support", "contact", "sales", "noreply",
