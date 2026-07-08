@@ -114,13 +114,6 @@ async def is_disposable(domain: str, mx_hosts: list) -> bool:
         except Exception:
             pass
 
-    try:
-        whois_data = await _fetch_whois(domain)
-        if whois_data and _is_recently_registered(whois_data):
-            return True
-    except Exception:
-        pass
-
     if _is_disposable_by_api(domain):
         return True
 
@@ -154,7 +147,10 @@ def _is_disposable_by_api(domain: str) -> bool:
 
 async def _fetch_whois(domain: str) -> dict:
     try:
-        data = whois.whois(domain)
+        data = await asyncio.wait_for(
+            asyncio.to_thread(whois.whois, domain),
+            timeout=5
+        )
         return data
     except Exception:
         return {}

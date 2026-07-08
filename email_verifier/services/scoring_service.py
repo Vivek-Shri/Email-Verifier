@@ -1,16 +1,12 @@
 def calculate(signals: dict) -> dict:
-    # Module 7: Scoring Engine
-    # Adopted from Reoon Email Verifier methodology:
-    # Higher weight on deliverability and mailbox verification,
-    # status "safe" replaces "valid", is_safe_to_send is separate bool.
     score = 0
 
     # POSITIVE
-    score += 10 if signals.get("is_valid_syntax") else 0
-    score += 10 if signals.get("mx_accepts_mail") else 0
-    score += 10 if signals.get("can_connect_smtp") else 0
-    score += 20 if signals.get("is_deliverable") and not signals.get("is_disposable") else 0
-    score += 10 if signals.get("is_mailbox_verified") else 0
+    score += 15 if signals.get("is_valid_syntax") else 0
+    score += 15 if signals.get("mx_accepts_mail") else 0
+    score += 15 if signals.get("can_connect_smtp") else 0
+    score += 25 if signals.get("is_deliverable") and not signals.get("is_disposable") else 0
+    score += 15 if signals.get("is_mailbox_verified") else 0
     score += 5 if not signals.get("is_role_account") else 0
     score += 5 if not signals.get("is_catch_all") else 0
     score += 5 if not signals.get("is_disposable") else 0
