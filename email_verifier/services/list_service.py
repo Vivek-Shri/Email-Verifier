@@ -1,7 +1,5 @@
 import config
 
-import config
-
 # Global cache for list sets to prevent re-parsing on every request
 _CACHE = {
     "FREE_EMAIL_DOMAINS": None,
