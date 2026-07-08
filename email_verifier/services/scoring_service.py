@@ -6,7 +6,7 @@ def calculate(signals: dict) -> dict:
     score += 15 if signals.get("is_valid_syntax") else 0
     score += 20 if signals.get("mx_accepts_mail") else 0
     score += 20 if signals.get("can_connect_smtp") else 0
-    score += 30 if signals.get("is_deliverable") else 0
+    score += 30 if signals.get("is_deliverable") and not signals.get("is_disposable") else 0
     score += 5 if not signals.get("is_disposable") else 0
     score += 5 if not signals.get("is_role_account") else 0
     score += 5 if not signals.get("is_catch_all") else 0
