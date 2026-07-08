@@ -1,4 +1,4 @@
-const API_BASE = window.location.origin;
+const API_BASE = "http://92.113.151.55:8000";
 
 const STATUS_META = {
     safe: {
@@ -23,7 +23,7 @@ const STATUS_META = {
     },
     role_account: {
         icon: "👤",
-        description: "This is a role-based email address (e.g., info@, support@). It is not tied to a specific person and may have low engagement.",
+        description: "This is a role-based email address (e.g. info@, support@). It is not tied to a specific person and may have low engagement.",
         class: "role_account"
     },
     spamtrap: {
@@ -76,6 +76,10 @@ function renderResult(data) {
     const scoreEl = document.getElementById("resultScore");
     scoreEl.textContent = score === null ? "N/A" : score + "/100";
     scoreEl.className = "score-badge " + getScoreClass(score);
+
+    const safeEl = document.getElementById("resultSafe");
+    safeEl.textContent = data.is_safe_to_send ? "Safe to Send" : "Not Safe";
+    safeEl.className = "safe-badge " + (data.is_safe_to_send ? "true" : "false");
 
     const card = document.getElementById("resultCard");
     card.className = "result-card";

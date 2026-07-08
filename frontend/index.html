@@ -7,25 +7,43 @@
     <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
     <div class="container">
         <header>
-            <h1>Email Verifier</h1>
-            <p>Verify email addresses instantly with SMTP-level accuracy</p>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M22 4L12 13 2 4"/>
+                    </svg>
+                </div>
+                <h1>Email Verifier</h1>
+            </div>
+            <p class="tagline">Verify any email with SMTP-level accuracy</p>
         </header>
 
         <main>
-            <div class="card">
-                <h2>Single Verification</h2>
-                <form id="verifyForm">
-                    <div class="input-group">
-                        <input 
-                            type="email" 
-                            id="emailInput" 
-                            placeholder="Enter email address..." 
-                            required
-                            autocomplete="email"
-                        >
-                        <button type="submit" id="verifyBtn">
+            <div class="card card--main">
+                <div class="card-header">
+                    <h2>Verify Email Address</h2>
+                    <p class="card-subtitle">Check deliverability, disposable status, and mailbox existence</p>
+                </div>
+
+                <form id="verifyForm" class="verify-form">
+                    <div class="input-row">
+                        <div class="input-wrapper">
+                            <input
+                                type="email"
+                                id="emailInput"
+                                placeholder="Enter email address..."
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                        <button type="submit" id="verifyBtn" class="btn btn--primary">
                             <span id="btnText">Verify</span>
                             <span id="btnLoader" class="loader hidden"></span>
                         </button>
@@ -38,12 +56,15 @@
                             <div class="result-icon" id="resultIcon"></div>
                             <div class="result-title">
                                 <h3 id="resultStatus">—</h3>
-                                <span class="score-badge" id="resultScore">0/100</span>
+                                <div class="result-meta">
+                                    <span class="score-badge" id="resultScore">0/100</span>
+                                    <span class="safe-badge" id="resultSafe">Not Safe</span>
+                                </div>
                             </div>
                         </div>
 
                         <div class="result-body">
-                            <div class="result-section">
+                            <div class="result-section result-section--highlight">
                                 <h4>What does "<span id="resultStatusText">—</span>" mean?</h4>
                                 <p id="resultDescription">—</p>
                             </div>
@@ -103,9 +124,14 @@
                 </div>
 
                 <div id="errorArea" class="error-area hidden">
-                    <p id="errorText"></p>
+                    <div class="error-icon">!</div>
+                    <p id="errorText">Something went wrong.</p>
                 </div>
             </div>
+
+            <footer class="footer">
+                <p>Email Verifier &mdash; SMTP-powered verification</p>
+            </footer>
         </main>
     </div>
 
