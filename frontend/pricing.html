@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Email Verifier</title>
+    <meta name="description" content="Simple, transparent pricing for email verification. Start free, scale as you grow.">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="./index.html" class="navbar-brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M22 4L12 13 2 4"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Email Verifier</span>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./verify.html">Verify</a></li>
+                <li><a href="./pricing.html" class="active">Pricing</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="./index.html">Home</a>
+        <a href="./verify.html">Verify</a>
+        <a href="./pricing.html">Pricing</a>
+        <a href="./about.html">About</a>
+        <a href="./contact.html">Contact</a>
+    </div>
+
+    <main>
+        <section class="section" style="padding-top: 8rem;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Pricing</span>
+                    <h2 class="section-title">Simple, transparent pricing</h2>
+                    <p class="section-subtitle">Start free, upgrade when you need more. No hidden fees, cancel anytime.</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3 class="pricing-name">Starter</h3>
+                        <div class="pricing-price">$0<span>/month</span></div>
+                        <p class="pricing-desc">Perfect for personal projects and testing.</p>
+                        <ul class="pricing-features">
+                            <li>100 verifications/month</li>
+                            <li>Single email verification</li>
+                            <li>Basic syntax check</li>
+                            <li>Email support</li>
+                            <li>Community access</li>
+                        </ul>
+                        <a href="./verify.html" class="btn btn--secondary">Start Free</a>
+                    </div>
+
+                    <div class="pricing-card featured">
+                        <div class="pricing-popular">Most Popular</div>
+                        <h3 class="pricing-name">Professional</h3>
+                        <div class="pricing-price">$49<span>/month</span></div>
+                        <p class="pricing-desc">For growing teams and serious projects.</p>
+                        <ul class="pricing-features">
+                            <li>5,000 verifications/month</li>
+                            <li>Bulk email verification</li>
+                            <li>SMTP + MX validation</li>
+                            <li>Disposable detection</li>
+                            <li>Priority support</li>
+                            <li>API access</li>
+                            <li>Webhook notifications</li>
+                        </ul>
+                        <a href="./verify.html" class="btn btn--primary">Get Started</a>
+                    </div>
+
+                    <div class="pricing-card">
+                        <h3 class="pricing-name">Enterprise</h3>
+                        <div class="pricing-price">Custom</div>
+                        <p class="pricing-desc">For high-volume and custom integrations.</p>
+                        <ul class="pricing-features">
+                            <li>Unlimited verifications</li>
+                            <li>Dedicated infrastructure</li>
+                            <li>Custom integrations</li>
+                            <li>99.99% SLA</li>
+                            <li>24/7 phone support</li>
+                            <li>On-premise option</li>
+                            <li>Custom reporting</li>
+                        </ul>
+                        <a href="./contact.html" class="btn btn--secondary">Contact Sales</a>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Starter</th>
+                                <th>Professional</th>
+                                <th>Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Monthly verifications</td>
+                                <td>100</td>
+                                <td>5,000</td>
+                                <td>Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td>Single email verification</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Bulk CSV upload</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>SMTP validation</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>MX record lookup</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Disposable detection</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Spam trap detection</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Role account detection</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>REST API access</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Webhook notifications</td>
+                                <td>—</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Dedicated infrastructure</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>On-premise deployment</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>SLA guarantee</td>
+                                <td>99.9%</td>
+                                <td>99.95%</td>
+                                <td>99.99%</td>
+                            </tr>
+                            <tr>
+                                <td>Support</td>
+                                <td>Email</td>
+                                <td>Priority</td>
+                                <td>24/7 Phone</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">FAQ</span>
+                    <h2 class="section-title">Frequently asked questions</h2>
+                    <p class="section-subtitle">Everything you need to know about our email verification service.</p>
+                </div>
+
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How accurate is the email verification?
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Our verification engine achieves 99.9% accuracy through real-time SMTP handshakes, MX record lookups, and advanced heuristics. We don't rely solely on pattern matching - we actually connect to mail servers to confirm mailbox existence.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What is SMTP-level verification?
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                SMTP-level verification means we connect directly to the mail server and simulate the email delivery process (without actually sending an email). This allows us to confirm whether the mailbox exists, is active, and can receive messages - providing much higher accuracy than syntax-only checks.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Do you store or keep the emails I verify?
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                No. We take privacy seriously. Emails are verified in real-time and are not stored permanently. We only retain anonymized metadata for service improvement and SLA reporting. We are GDPR and CCPA compliant.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Can I integrate this into my existing workflow?
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Absolutely. We provide a comprehensive REST API that can be integrated into any platform. Our API documentation includes code samples in Python, JavaScript, PHP, Ruby, and more. Most integrations take less than 30 minutes to implement.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What happens if I exceed my monthly limit?
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                You'll receive a notification when you reach 80% of your limit. If you exceed it, additional verifications are charged at an overage rate ($0.005 per verification for Professional plans). You can also upgrade your plan at any time to avoid overage charges.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="./index.html" class="navbar-brand">
+                        <div class="logo-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="M22 4L12 13 2 4"/>
+                            </svg>
+                        </div>
+                        <span class="logo-text">Email Verifier</span>
+                    </a>
+                    <p>Industry-leading email verification with SMTP-level accuracy. Protect your sender reputation and improve deliverability.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="./verify.html">Email Verifier</a></li>
+                        <li><a href="./pricing.html">Pricing</a></li>
+                        <li><a href="./pricing.html">API Access</a></li>
+                        <li><a href="./pricing.html">Bulk Verification</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="./about.html">About Us</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">Careers</a></li>
+                        <li><a href="./about.html">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="./contact.html">Help Center</a></li>
+                        <li><a href="./contact.html">Documentation</a></li>
+                        <li><a href="./contact.html">Status</a></li>
+                        <li><a href="./contact.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Email Verifier. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./app.js"></script>
+</body>
+</html>

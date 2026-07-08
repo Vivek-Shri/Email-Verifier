@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Email Verifier</title>
+    <meta name="description" content="Verify any email address with SMTP-level accuracy. Check deliverability, detect disposable emails, and validate syntax instantly.">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="./index.html" class="navbar-brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M22 4L12 13 2 4"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Email Verifier</span>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./verify.html" class="active">Verify</a></li>
+                <li><a href="./pricing.html">Pricing</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="./index.html">Home</a>
+        <a href="./verify.html">Verify</a>
+        <a href="./pricing.html">Pricing</a>
+        <a href="./about.html">About</a>
+        <a href="./contact.html">Contact</a>
+    </div>
+
+    <section class="verify-section">
+        <div class="container">
+            <div class="verify-card">
+                <div class="card-header">
+                    <h2>Verify Email Address</h2>
+                    <p class="card-subtitle">Check deliverability, disposable status, and mailbox existence with SMTP-level precision</p>
+                </div>
+
+                <div class="verify-form-wrap">
+                    <form id="verifyForm" class="verify-form">
+                        <div class="input-wrapper">
+                            <input
+                                type="email"
+                                id="emailInput"
+                                placeholder="Enter email address..."
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                        <button type="submit" id="verifyBtn" class="btn btn--primary">
+                            <span id="btnText">Verify</span>
+                            <span id="btnLoader" class="loader hidden"></span>
+                        </button>
+                    </form>
+
+                    <div id="resultArea" class="result-area hidden">
+                        <div class="result-card" id="resultCard">
+                            <div class="result-header">
+                                <div class="result-icon" id="resultIcon"></div>
+                                <div class="result-title">
+                                    <h3 id="resultStatus">—</h3>
+                                    <div class="result-meta">
+                                        <span class="score-badge" id="resultScore">0/100</span>
+                                        <span class="safe-badge" id="resultSafe">Not Safe</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="result-body">
+                                <div class="result-section result-section--highlight">
+                                    <h4>What does "<span id="resultStatusText">—</span>" mean?</h4>
+                                    <p id="resultDescription">—</p>
+                                </div>
+
+                                <div class="result-grid">
+                                    <div class="result-item">
+                                        <span class="label">can_connect_smtp</span>
+                                        <span class="value" id="val_can_connect_smtp">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">mx_accepts_mail</span>
+                                        <span class="value" id="val_mx_accepts_mail">—</span>
+                                    </div>
+                                    <div class="result-item full-width">
+                                        <span class="label">mx_records</span>
+                                        <span class="value mono" id="val_mx_records">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">has_inbox_full</span>
+                                        <span class="value" id="val_has_inbox_full">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_disabled</span>
+                                        <span class="value" id="val_is_disabled">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_deliverable</span>
+                                        <span class="value" id="val_is_deliverable">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_role_account</span>
+                                        <span class="value" id="val_is_role_account">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_catch_all</span>
+                                        <span class="value" id="val_is_catch_all">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_disposable</span>
+                                        <span class="value" id="val_is_disposable">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_spamtrap</span>
+                                        <span class="value" id="val_is_spamtrap">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_valid_syntax</span>
+                                        <span class="value" id="val_is_valid_syntax">—</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">is_safe_to_send</span>
+                                        <span class="value" id="val_is_safe_to_send">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="errorArea" class="error-area hidden">
+                        <div class="error-icon">!</div>
+                        <p id="errorText">Something went wrong.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="./index.html" class="navbar-brand">
+                        <div class="logo-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="M22 4L12 13 2 4"/>
+                            </svg>
+                        </div>
+                        <span class="logo-text">Email Verifier</span>
+                    </a>
+                    <p>Industry-leading email verification with SMTP-level accuracy. Protect your sender reputation and improve deliverability.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="./verify.html">Email Verifier</a></li>
+                        <li><a href="./pricing.html">Pricing</a></li>
+                        <li><a href="./pricing.html">API Access</a></li>
+                        <li><a href="./pricing.html">Bulk Verification</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="./about.html">About Us</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">Careers</a></li>
+                        <li><a href="./about.html">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="./contact.html">Help Center</a></li>
+                        <li><a href="./contact.html">Documentation</a></li>
+                        <li><a href="./contact.html">Status</a></li>
+                        <li><a href="./contact.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Email Verifier. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./app.js"></script>
+</body>
+</html>

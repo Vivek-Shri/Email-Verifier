@@ -126,15 +126,19 @@ function setLoading(loading) {
     const btnText = document.getElementById("btnText");
     const btnLoader = document.getElementById("btnLoader");
 
+    if (!btn) return;
+
     btn.disabled = loading;
-    btnText.classList.toggle("hidden", loading);
-    btnLoader.classList.toggle("hidden", !loading);
+    if (btnText) btnText.classList.toggle("hidden", loading);
+    if (btnLoader) btnLoader.classList.toggle("hidden", !loading);
 }
 
 async function verifyEmail(email) {
     setLoading(true);
-    document.getElementById("resultArea").classList.add("hidden");
-    document.getElementById("errorArea").classList.add("hidden");
+    const resultArea = document.getElementById("resultArea");
+    const errorArea = document.getElementById("errorArea");
+    if (resultArea) resultArea.classList.add("hidden");
+    if (errorArea) errorArea.classList.add("hidden");
 
     try {
         const resp = await fetch(`${API_BASE}/api/v1/verify/single?email=${encodeURIComponent(email)}`);
@@ -151,9 +155,127 @@ async function verifyEmail(email) {
     }
 }
 
-document.getElementById("verifyForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.getElementById("emailInput").value.trim();
-    if (!email) return;
-    verifyEmail(email);
+// Mobile Menu
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+
+if (hamburger && mobileMenu) {
+    hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        mobileMenu.classList.toggle("active");
+        document.body.style.overflow = mobileMenu.classList.contains("active") ? "hidden" : "";
+    });
+
+    mobileMenu.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+            hamburger.classList.remove("active");
+            mobileMenu.classList.remove("active");
+            document.body.style.overflow = "";
+        });
+    });
+}
+
+// Navbar Scroll Effect
+const navbar = document.getElementById("navbar");
+let lastScroll = 0;
+
+window.addEventListener("scroll", () => {
+    const currentScroll = window.pageYOffset;
+
+    if (navbar) {
+        if (currentScroll > 50) {
+            navbar.classList.add("scrolled");
+        } else {
+            navbar.classList.remove("scrolled");
+        }
+    }
+
+    lastScroll = currentScroll;
+});
+
+// Active Nav Link
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
+document.querySelectorAll(".nav-links a").forEach(link => {
+    const href = link.getAttribute("href");
+    if (href && href.includes(currentPage)) {
+        link.classList.add("active");
+    }
+});
+
+// Verify Form
+const verifyForm = document.getElementById("verifyForm");
+if (verifyForm) {
+    verifyForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById("emailInput");
+        const email = emailInput ? emailInput.value.trim() : "";
+        if (!email) return;
+        verifyEmail(email);
+    });
+}
+
+// Contact Form
+const contactForm = document.getElementById("contactForm");
+if (contactForm) {
+    contactForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("contactName")?.value.trim();
+        const email = document.getElementById("contactEmail")?.value.trim();
+        const message = document.getElementById("contactMessage")?.value.trim();
+
+        if (!name || !email || !message) return;
+
+        if (!isValidEmail(email)) {
+            const emailInput = document.getElementById("contactEmail");
+            if (emailInput) {
+                emailInput.style.borderColor = "var(--danger)";
+                emailInput.style.boxShadow = "0 0 0 3px var(--danger-glow)";
+                setTimeout(() => {
+                    emailInput.style.borderColor = "";
+                    emailInput.style.boxShadow = "";
+                }, 2000);
+            }
+            return;
+        }
+
+        contactForm.reset();
+        const successEl = document.getElementById("contactSuccess");
+        if (successEl) {
+            successEl.classList.remove("hidden");
+            setTimeout(() => successEl.classList.add("hidden"), 5000);
+        }
+    });
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// FAQ Accordion
+document.querySelectorAll(".faq-question").forEach(question => {
+    question.addEventListener("click", () => {
+        const item = question.parentElement;
+        const isActive = item.classList.contains("active");
+
+        document.querySelectorAll(".faq-item").forEach(faq => faq.classList.remove("active"));
+
+        if (!isActive) {
+            item.classList.add("active");
+        }
+    });
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+        const href = this.getAttribute("href");
+        if (href === "#") return;
+
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    });
 });

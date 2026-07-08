@@ -3,138 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verifier</title>
-    <link rel="stylesheet" href="/frontend/styles.css">
+    <title>Email Verifier - SMTP-Level Email Verification</title>
+    <meta name="description" content="Industry-leading email verification service with SMTP-level accuracy. Verify deliverability, detect disposable emails, and protect your sender reputation.">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="bg-orb bg-orb--1"></div>
     <div class="bg-orb bg-orb--2"></div>
     <div class="bg-orb bg-orb--3"></div>
 
-    <div class="container">
-        <header>
-            <div class="logo">
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="./index.html" class="navbar-brand">
                 <div class="logo-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="4" width="20" height="16" rx="2"/>
                         <path d="M22 4L12 13 2 4"/>
                     </svg>
                 </div>
-                <h1>Email Verifier</h1>
-            </div>
-            <p class="tagline">Verify any email with SMTP-level accuracy</p>
-        </header>
+                <span class="logo-text">Email Verifier</span>
+            </a>
 
-        <main>
-            <div class="card card--main">
-                <div class="card-header">
-                    <h2>Verify Email Address</h2>
-                    <p class="card-subtitle">Check deliverability, disposable status, and mailbox existence</p>
-                </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./index.html" class="active">Home</a></li>
+                <li><a href="./verify.html">Verify</a></li>
+                <li><a href="./pricing.html">Pricing</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+                <li><a href="./verify.html" class="nav-cta">Get Started</a></li>
+            </ul>
 
-                <form id="verifyForm" class="verify-form">
-                    <div class="input-row">
-                        <div class="input-wrapper">
-                            <input
-                                type="email"
-                                id="emailInput"
-                                placeholder="Enter email address..."
-                                required
-                                autocomplete="email"
-                            >
-                        </div>
-                        <button type="submit" id="verifyBtn" class="btn btn--primary">
-                            <span id="btnText">Verify</span>
-                            <span id="btnLoader" class="loader hidden"></span>
-                        </button>
-                    </div>
-                </form>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
 
-                <div id="resultArea" class="result-area hidden">
-                    <div class="result-card" id="resultCard">
-                        <div class="result-header">
-                            <div class="result-icon" id="resultIcon"></div>
-                            <div class="result-title">
-                                <h3 id="resultStatus">—</h3>
-                                <div class="result-meta">
-                                    <span class="score-badge" id="resultScore">0/100</span>
-                                    <span class="safe-badge" id="resultSafe">Not Safe</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="result-body">
-                            <div class="result-section result-section--highlight">
-                                <h4>What does "<span id="resultStatusText">—</span>" mean?</h4>
-                                <p id="resultDescription">—</p>
-                            </div>
-
-                            <div class="result-grid">
-                                <div class="result-item">
-                                    <span class="label">can_connect_smtp</span>
-                                    <span class="value" id="val_can_connect_smtp">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">mx_accepts_mail</span>
-                                    <span class="value" id="val_mx_accepts_mail">—</span>
-                                </div>
-                                <div class="result-item full-width">
-                                    <span class="label">mx_records</span>
-                                    <span class="value mono" id="val_mx_records">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">has_inbox_full</span>
-                                    <span class="value" id="val_has_inbox_full">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_disabled</span>
-                                    <span class="value" id="val_is_disabled">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_deliverable</span>
-                                    <span class="value" id="val_is_deliverable">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_role_account</span>
-                                    <span class="value" id="val_is_role_account">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_catch_all</span>
-                                    <span class="value" id="val_is_catch_all">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_disposable</span>
-                                    <span class="value" id="val_is_disposable">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_spamtrap</span>
-                                    <span class="value" id="val_is_spamtrap">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_valid_syntax</span>
-                                    <span class="value" id="val_is_valid_syntax">—</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="label">is_safe_to_send</span>
-                                    <span class="value" id="val_is_safe_to_send">—</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="errorArea" class="error-area hidden">
-                    <div class="error-icon">!</div>
-                    <p id="errorText">Something went wrong.</p>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <p>Email Verifier &mdash; SMTP-powered verification</p>
-            </footer>
-        </main>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="./index.html">Home</a>
+        <a href="./verify.html">Verify</a>
+        <a href="./pricing.html">Pricing</a>
+        <a href="./about.html">About</a>
+        <a href="./contact.html">Contact</a>
+        <a href="./verify.html" class="btn btn--primary">Get Started</a>
     </div>
 
-    <script src="/frontend/app.js"></script>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    Trusted by 10,000+ businesses worldwide
+                </div>
+                <h1>
+                    Verify Emails with<br>
+                    <span class="hero-gradient">SMTP-Level Precision</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Enterprise-grade email verification that checks deliverability, detects disposable addresses, and protects your sender reputation with industry-leading accuracy.
+                </p>
+                <div class="hero-actions">
+                    <a href="./verify.html" class="btn btn--primary">Start Verifying Free</a>
+                    <a href="./pricing.html" class="btn btn--secondary">View Pricing</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">2.4B+</div>
+                        <div class="stat-label">Emails Verified</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">99.99%</div>
+                        <div class="stat-label">Uptime SLA</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">&lt;50ms</div>
+                        <div class="stat-label">Avg Response</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Features</span>
+                    <h2 class="section-title">Everything you need for clean email lists</h2>
+                    <p class="section-subtitle">Powerful verification engine with real-time SMTP checks, disposable detection, and comprehensive deliverability scoring.</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">SMTP Verification</h3>
+                        <p class="feature-desc">Real-time mailbox existence checks by connecting directly to mail servers without sending a single email.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Disposable Detection</h3>
+                        <p class="feature-desc">Instantly identify temporary and disposable email addresses from 10,000+ known providers.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Spam Trap Detection</h3>
+                        <p class="feature-desc">Advanced heuristics to identify spam traps and honeypots that could damage your sender reputation.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Deliverability Scoring</h3>
+                        <p class="feature-desc">Comprehensive scoring from 0-100 based on syntax, domain health, and SMTP response analysis.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Bulk Processing</h3>
+                        <p class="feature-desc">Upload CSV or use our API to verify thousands of emails in minutes with parallel processing.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Lightning Fast API</h3>
+                        <p class="feature-desc">RESTful API with sub-50ms response times. Integrate verification into your workflow in minutes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="background: rgba(255,255,255,0.01);">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">How It Works</span>
+                    <h2 class="section-title">Three steps to cleaner lists</h2>
+                    <p class="section-subtitle">Getting started takes less than 2 minutes. No credit card required for the free tier.</p>
+                </div>
+
+                <div class="how-grid">
+                    <div class="how-item">
+                        <div class="how-number">1</div>
+                        <h3 class="how-title">Enter Email</h3>
+                        <p class="how-desc">Type or paste any email address into our verification tool. Single or bulk upload supported.</p>
+                    </div>
+                    <div class="how-item">
+                        <div class="how-number">2</div>
+                        <h3 class="how-title">SMTP Analysis</h3>
+                        <p class="how-desc">Our engine performs deep SMTP handshakes, MX record lookups, and syntax validation.</p>
+                    </div>
+                    <div class="how-item">
+                        <div class="how-number">3</div>
+                        <h3 class="how-title">Get Results</h3>
+                        <p class="how-desc">Receive detailed results with status, confidence score, and actionable insights instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="./index.html" class="navbar-brand">
+                        <div class="logo-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="M22 4L12 13 2 4"/>
+                            </svg>
+                        </div>
+                        <span class="logo-text">Email Verifier</span>
+                    </a>
+                    <p>Industry-leading email verification with SMTP-level accuracy. Protect your sender reputation and improve deliverability.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="./verify.html">Email Verifier</a></li>
+                        <li><a href="./pricing.html">Pricing</a></li>
+                        <li><a href="./pricing.html">API Access</a></li>
+                        <li><a href="./pricing.html">Bulk Verification</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="./about.html">About Us</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">Careers</a></li>
+                        <li><a href="./about.html">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="./contact.html">Help Center</a></li>
+                        <li><a href="./contact.html">Documentation</a></li>
+                        <li><a href="./contact.html">Status</a></li>
+                        <li><a href="./contact.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Email Verifier. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./app.js"></script>
 </body>
 </html>
