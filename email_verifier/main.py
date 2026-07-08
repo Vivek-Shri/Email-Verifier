@@ -358,3 +358,16 @@ async def serve_frontend():
     if os.path.exists(index):
         return FileResponse(index)
     return JSONResponse({"message": "Email Verifier API running. Frontend not found."})
+
+_PAGES = ["verify.html", "pricing.html", "about.html", "contact.html"]
+
+for _page in _PAGES:
+    _route = f"/{_page}"
+    def _viewer(page=_page):
+        async def _serve():
+            path = os.path.join(frontend_path, page)
+            if os.path.exists(path):
+                return FileResponse(path)
+            return JSONResponse({"detail": "Page not found"}, status_code=404)
+        return _serve
+    app.get(_route)(_viewer())
