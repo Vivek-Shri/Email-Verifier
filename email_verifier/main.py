@@ -41,7 +41,7 @@ app.add_middleware(
 async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal Server Error", "error": str(exc)}
+        content={"detail": "Internal Server Error"}
     )
 
 def build_error_result(raw_email, error_str, start_time) -> EmailResult:
@@ -242,8 +242,8 @@ async def verify_one_email(raw_email: str) -> EmailResult:
         }
         return EmailResult(**res)
         
-    except Exception as e:
-        return build_error_result(raw_email, str(e), start)
+    except Exception:
+        return build_error_result(raw_email, "Verification failed due to an internal error", start)
 
 @app.post("/api/v1/verify/single", response_model=EmailResult)
 async def verify_single(request: SingleVerifyRequest):

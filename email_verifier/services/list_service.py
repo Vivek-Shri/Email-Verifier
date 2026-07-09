@@ -8,7 +8,8 @@ _CACHE = {
     "SPAMTRAP_DOMAINS": None,
     "SPAMTRAP_KEYWORDS": None,
     "TYPO_TRAP_DOMAINS": None,
-    "CATCH_ALL_KNOWN_DOMAINS": None
+    "CATCH_ALL_KNOWN_DOMAINS": None,
+    "SMTP_BLOCKED_DOMAINS": None
 }
 
 def get_list(name):

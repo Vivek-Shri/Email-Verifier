@@ -1,5 +1,6 @@
 import smtplib
 import asyncio
+import socket
 import config
 from utils.helpers import random_8_chars
 
@@ -10,10 +11,12 @@ class SMTPResult:
         self.smtp_message = smtp_message or ""
         self.status = status
 
-def _smtp_check_sync(email, target_host) -> SMTPResult:
+def _smtp_check_sync(email, target_host, force_relay=False) -> SMTPResult:
     # Module 5: SMTP ENGINE
+    server = None
+    use_relay = force_relay or config.SMTP_RELAY_USE
     try:
-        if config.SMTP_RELAY_USE:
+        if use_relay:
             host = config.SMTP_RELAY_HOST
             port = config.SMTP_RELAY_PORT
         else:
@@ -21,35 +24,44 @@ def _smtp_check_sync(email, target_host) -> SMTPResult:
             port = 25 # Default as per spec
             
         try:
-            # Initialize with host and port to correctly set internal 'host' for STARTTLS
             server = smtplib.SMTP(host, port, timeout=config.SMTP_TIMEOUT)
-        except (ConnectionRefusedError, TimeoutError, OSError) as e:
-            return SMTPResult(status="blocked", smtp_message=f"Connection failed: {str(e)}")
+        except (ConnectionRefusedError, TimeoutError, OSError):
+            return SMTPResult(status="blocked", smtp_message="Connection failed: unable to reach mail server")
         
         server.ehlo(config.SMTP_HELO_DOMAIN)
         
         # If using relay, we must authenticate
-        if config.SMTP_RELAY_USE:
+        if use_relay:
             try:
                 server.starttls()
                 server.ehlo(config.SMTP_HELO_DOMAIN)
                 server.login(config.SMTP_RELAY_USER, config.SMTP_RELAY_KEY)
-            except Exception as e:
-                return SMTPResult(status="unknown", smtp_message=f"Relay Auth Failed: {str(e)}")
+            except Exception:
+                return SMTPResult(status="unknown", smtp_message="Relay authentication failed")
         
         server.mail(config.SMTP_FROM_EMAIL)
         code, message = server.rcpt(email)
-        server.quit()
         
         return SMTPResult(connected=True, smtp_code=code, smtp_message=message.decode('utf-8', errors='ignore'))
         
-    except Exception as e:
-        return SMTPResult(status="unknown", smtp_message=str(e))
+    except socket.timeout:
+        return SMTPResult(status="unknown", smtp_message="SMTP timeout")
+    except Exception:
+        return SMTPResult(status="unknown", smtp_message="SMTP verification failed")
+    finally:
+        if server:
+            try:
+                server.quit()
+            except Exception:
+                try:
+                    server.close()
+                except Exception:
+                    pass
 
-async def _smtp_check_with_retry(email, mx_host) -> SMTPResult:
+async def _smtp_check_with_retry(email, mx_host, force_relay=False) -> SMTPResult:
     last_res = None
     for attempt in range(config.SMTP_RETRY_COUNT + 1):
-        res = await asyncio.to_thread(_smtp_check_sync, email, mx_host)
+        res = await asyncio.to_thread(_smtp_check_sync, email, mx_host, force_relay=force_relay)
         
         if res.status == "blocked":
             return res
@@ -83,28 +95,37 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
         "is_disabled": False,
         "is_catch_all": is_known_catch_all,
         "is_mailbox_verified": None,
-        "smtp_status": "unknown",
+        "smtp_status": "skipped",
         "smtp_error_note": None
     }
-    
-    if not config.SMTP_RELAY_USE and not mx_hosts:
+
+    domain = email.split("@")[-1] if "@" in email else None
+
+    force_relay = domain in config.SMTP_RELAY_DOMAINS
+
+    if domain in config.SMTP_BLOCKED_DOMAINS:
+        res["smtp_error_note"] = (
+            f"SMTP check skipped for {domain}: mail server actively blocks "
+            "verification probes, and no relay is configured for this domain."
+        )
+        res["is_mailbox_verified"] = None
+        return res
+
+    if not config.SMTP_RELAY_USE and not mx_hosts and not force_relay:
         return res
         
     primary_host = mx_hosts[0] if mx_hosts else None
     
     # Step 1: Catch-all detection
     if not is_known_catch_all:
-        domain = email.split('@')[1]
+        fake_user = f"zz9xfake_{random_8_chars()}"
+        fake_email = f"{fake_user}@{domain}"
         
-        if domain not in config.NEVER_CATCH_ALL_DOMAINS:
-            fake_user = f"zz9xfake_{random_8_chars()}"
-            fake_email = f"{fake_user}@{domain}"
+        fake_res = await _smtp_check_with_retry(fake_email, primary_host, force_relay=force_relay)
+        if fake_res.connected and fake_res.smtp_code in [250, 251]:
+            res["is_catch_all"] = True
             
-            fake_res = await _smtp_check_with_retry(fake_email, primary_host)
-            if fake_res.connected and fake_res.smtp_code in [250, 251]:
-                res["is_catch_all"] = True
-            
-    actual_res = await _smtp_check_with_retry(email, primary_host)
+    actual_res = await _smtp_check_with_retry(email, primary_host, force_relay=force_relay)
     
     res["smtp_status"] = actual_res.status
     res["smtp_error_note"] = actual_res.smtp_message
@@ -136,7 +157,9 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
         res["is_mailbox_verified"] = True
     elif res.get("is_disabled") or res.get("smtp_status") == "blocked":
         res["is_mailbox_verified"] = False
+    elif res.get("smtp_status") == "skipped":
+        res["is_mailbox_verified"] = None
     else:
         res["is_mailbox_verified"] = None
-    
+
     return res

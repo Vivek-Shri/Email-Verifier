@@ -60,11 +60,11 @@ async def get_mx(domain: str) -> dict:
             "dns_error": None
         }
         
-    except Exception as e:
+    except Exception:
         return {
             "mx_accepts_mail": False,
             "mx_records": "",
             "mx_hosts_list": [],
             "mx_blocked": False,
-            "dns_error": f"DNS Error: {str(e)}"
+            "dns_error": "DNS resolution failed"
         }

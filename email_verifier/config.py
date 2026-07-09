@@ -82,6 +82,19 @@ DYNAMIC_DISPOSABLE_LIST_URL = "https://raw.githubusercontent.com/disposable/disp
 DISPOSABLE_API_FALLBACK_ENABLED = os.environ.get("DISPOSABLE_API_FALLBACK_ENABLED", "false").lower() == "true"
 DISPOSABLE_API_FALLBACK_URL = "https://disposable.debounce.io/"
 
+# SMTP_RELAY_DOMAINS: domains that ALWAYS use the relay, even if SMTP_RELAY_USE=false.
+# Useful when a provider (e.g., Yahoo) blocks direct MX:25 probes but allows relayed delivery.
+# Requires SMTP_RELAY_USER and SMTP_RELAY_KEY to be configured.
+SMTP_RELAY_DOMAINS = [
+    "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "yahoo.de",
+    "yahoo.es", "yahoo.fr", "yahoo.it", "yahoo.ca",
+    "yahoo.com.au", "yahoo.co.nz", "yahoo.co.jp", "yahoo.tl",
+    "ymail.com", "rocketmail.com"
+]
+
+# Domains that are known to block SMTP verification and have no viable relay path
+SMTP_BLOCKED_DOMAINS = []
+
 # Domains that we know are NOT catch-all (to prevent relay false positives)
 NEVER_CATCH_ALL_DOMAINS = [
     "gmail.com", "googlemail.com", "icloud.com",
