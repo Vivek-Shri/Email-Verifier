@@ -67,10 +67,9 @@ TYPO_TRAP_DOMAINS = [
     "putlook.com", "icloud.co", "iclou.com"
 ]
 
-CATCH_ALL_KNOWN_DOMAINS = [
-    "yahoo.com", "yahoo.co.in", "yahoo.co.uk",
-    "hotmail.com", "outlook.com", "live.com"
-]
+# Cleared: catch-all status is now determined dynamically via SMTP fake-email probe.
+# Do NOT add major providers here — they are not catch-all.
+CATCH_ALL_KNOWN_DOMAINS = []
 
 # Dynamic disposable domain list (downloaded from public sources at startup)
 # Uses a maintained public blocklist (~74k domains). Refreshes every 24h.
@@ -90,8 +89,26 @@ SMTP_RELAY_DOMAINS = []
 # Domains that are known to block SMTP verification and have no viable relay path
 SMTP_BLOCKED_DOMAINS = []
 
-# Domains that we know are NOT catch-all (to prevent relay false positives)
+# Domains that are definitively NOT catch-all.
+# For these, the fake-email catch-all probe is skipped and is_catch_all is always False.
+# These are major providers known to reject non-existent addresses with 550.
 NEVER_CATCH_ALL_DOMAINS = [
-    "gmail.com", "googlemail.com", "icloud.com",
-    "outlook.com", "protection.outlook.com", "office365.com"
+    # Google
+    "gmail.com", "googlemail.com",
+    # Apple
+    "icloud.com", "me.com", "mac.com",
+    # Microsoft
+    "outlook.com", "hotmail.com", "live.com", "msn.com",
+    "protection.outlook.com", "office365.com",
+    # Yahoo
+    "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "yahoo.de",
+    "yahoo.es", "yahoo.fr", "yahoo.it", "yahoo.ca",
+    "yahoo.com.au", "yahoo.co.nz", "yahoo.co.jp",
+    "ymail.com", "rocketmail.com",
+    # Other major providers
+    "protonmail.com", "proton.me",
+    "zoho.com",
+    "aol.com",
+    "yandex.com", "yandex.ru",
+    "rediffmail.com"
 ]

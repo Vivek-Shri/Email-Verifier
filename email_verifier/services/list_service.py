@@ -8,7 +8,6 @@ _CACHE = {
     "SPAMTRAP_DOMAINS": None,
     "SPAMTRAP_KEYWORDS": None,
     "TYPO_TRAP_DOMAINS": None,
-    "CATCH_ALL_KNOWN_DOMAINS": None,
     "SMTP_BLOCKED_DOMAINS": None
 }
 
@@ -37,5 +36,7 @@ def check(parsed: dict) -> dict:
         "is_free_email": domain in get_list("FREE_EMAIL_DOMAINS"),
         "is_role_account": username in get_list("ROLE_ACCOUNTS"),
         "is_spamtrap": is_trap,
-        "is_known_catch_all": domain in get_list("CATCH_ALL_KNOWN_DOMAINS")
+        # Catch-all is now determined dynamically by smtp_service via SMTP fake-email probe.
+        # Static list (CATCH_ALL_KNOWN_DOMAINS) is cleared; always return False here.
+        "is_known_catch_all": False
     }

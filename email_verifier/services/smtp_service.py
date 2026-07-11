@@ -93,7 +93,7 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
         "is_deliverable": False,
         "has_inbox_full": False,
         "is_disabled": False,
-        "is_catch_all": is_known_catch_all,
+        "is_catch_all": False,
         "is_mailbox_verified": None,
         "smtp_status": "skipped",
         "smtp_error_note": None
@@ -113,30 +113,57 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
 
     if not config.SMTP_RELAY_USE and not mx_hosts and not force_relay:
         return res
-        
+
     primary_host = mx_hosts[0] if mx_hosts else None
-    
+
+    # ----------------------------------------------------------------
     # Step 1: Catch-all detection
-    if not is_known_catch_all:
+    # Strategy:
+    #   a) If domain is in NEVER_CATCH_ALL_DOMAINS → skip probe, is_catch_all = False
+    #   b) Run SMTP fake-email probe:
+    #      - Accepted (250/251)      → is_catch_all = True
+    #      - Rejected (5xx)          → is_catch_all = False (definitively not catch-all)
+    #      - Cannot connect/timeout  → catch_all_probe_blocked = True (will use heuristic)
+    # ----------------------------------------------------------------
+    never_catch_all = domain in config.NEVER_CATCH_ALL_DOMAINS
+    catch_all_probe_blocked = False  # tracks whether fake probe couldn't connect
+
+    if never_catch_all:
+        res["is_catch_all"] = False
+    else:
         fake_user = f"zz9xfake_{random_8_chars()}"
         fake_email = f"{fake_user}@{domain}"
-        
+
         fake_res = await _smtp_check_with_retry(fake_email, primary_host, force_relay=force_relay)
-        if fake_res.connected and fake_res.smtp_code in [250, 251]:
-            res["is_catch_all"] = True
-            
+
+        if fake_res.connected:
+            if fake_res.smtp_code in [250, 251]:
+                # Server accepted a clearly fake address → it's catch-all
+                res["is_catch_all"] = True
+            else:
+                # Server rejected fake address → NOT catch-all
+                res["is_catch_all"] = False
+        else:
+            # Could not connect for fake probe (port blocked, timeout, etc.)
+            # Do not assume catch-all — use heuristic after real probe
+            catch_all_probe_blocked = True
+            res["is_catch_all"] = False  # optimistic default; may be updated below
+
+    # ----------------------------------------------------------------
+    # Step 2: Actual email probe
+    # ----------------------------------------------------------------
     actual_res = await _smtp_check_with_retry(email, primary_host, force_relay=force_relay)
-    
+
     res["smtp_status"] = actual_res.status
     res["smtp_error_note"] = actual_res.smtp_message
-    
+
     if actual_res.connected:
         res["can_connect_smtp"] = True
         res["smtp_status"] = "connected"
-        
+
         code = actual_res.smtp_code
         msg = actual_res.smtp_message
-        
+
         if code in [250, 251]:
             res["is_deliverable"] = True
         elif code == 452:
@@ -150,7 +177,30 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
             res["is_deliverable"] = False
         elif code in [421, 450, 451]:
             res["smtp_status"] = "temporary_failure"
-    
+
+    # ----------------------------------------------------------------
+    # Step 3: Heuristic fallback when catch-all probe was blocked
+    # If we couldn't run the fake probe but the real email was delivered:
+    #   → Mark as deliverable/safe (SMTP confirmed delivery, catch-all unknown)
+    #   → Add a note so the caller knows catch-all status is inconclusive
+    # If real probe also couldn't connect → smtp_status = blocked, no penalty
+    # ----------------------------------------------------------------
+    if catch_all_probe_blocked:
+        if res["is_deliverable"]:
+            # Real email accepted — treat as safe, catch-all is indeterminate
+            res["is_catch_all"] = False
+            note = res.get("smtp_error_note") or ""
+            res["smtp_error_note"] = (
+                (note + " | " if note else "") +
+                "Catch-all status could not be verified (SMTP probe blocked on fake address)"
+            )
+        else:
+            # Real probe also failed/blocked — genuinely unknown
+            res["is_catch_all"] = False
+
+    # ----------------------------------------------------------------
+    # Step 4: Set is_mailbox_verified
+    # ----------------------------------------------------------------
     if res.get("is_catch_all"):
         res["is_mailbox_verified"] = False
     elif res.get("is_deliverable"):
