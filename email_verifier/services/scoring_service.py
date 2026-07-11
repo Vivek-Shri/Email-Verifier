@@ -1,6 +1,19 @@
 def calculate(signals: dict) -> dict:
     score = 0
 
+    # Special case: unverifiable domains (Yahoo/AOL deferred bounce).
+    # SMTP signals are meaningless for these — score only what we know for certain.
+    if signals.get("smtp_status") == "unverifiable":
+        score += 15 if signals.get("is_valid_syntax") else 0
+        score += 15 if signals.get("mx_accepts_mail") else 0
+        score += 5 if not signals.get("is_role_account") else 0
+        score += 5 if not signals.get("is_disposable") else 0
+        score -= 2 if signals.get("is_free_email") else 0
+        score -= 15 if signals.get("is_gibberish") else 0
+        score -= 30 if signals.get("is_disposable") else 0
+        score -= 50 if signals.get("is_spamtrap") else 0
+        return {"overall_score": min(max(int(score), 0), 100)}
+
     # POSITIVE
     score += 15 if signals.get("is_valid_syntax") else 0
     score += 15 if signals.get("mx_accepts_mail") else 0
