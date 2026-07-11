@@ -13,7 +13,7 @@ TMP_FILE_DIR = os.path.join(tempfile.gettempdir(), "email_verifier")
 TMP_FILE_EXPIRY_MINUTES = 15
 
 # SMTP Relay Configuration (OFF by default — we connect directly to recipient MX on port 25)
-SMTP_RELAY_USE = os.environ.get("SMTP_RELAY_USE", "false").lower() == "true"
+SMTP_RELAY_USE = False
 SMTP_RELAY_HOST = os.environ.get("SMTP_RELAY_HOST", "smtp-relay.brevo.com")
 SMTP_RELAY_PORT = int(os.environ.get("SMTP_RELAY_PORT", "2525"))
 SMTP_RELAY_USER = os.environ.get("SMTP_RELAY_USER", "")
@@ -85,12 +85,7 @@ DISPOSABLE_API_FALLBACK_URL = "https://disposable.debounce.io/"
 # SMTP_RELAY_DOMAINS: domains that ALWAYS use the relay, even if SMTP_RELAY_USE=false.
 # Useful when a provider (e.g., Yahoo) blocks direct MX:25 probes but allows relayed delivery.
 # Requires SMTP_RELAY_USER and SMTP_RELAY_KEY to be configured.
-SMTP_RELAY_DOMAINS = [
-    "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "yahoo.de",
-    "yahoo.es", "yahoo.fr", "yahoo.it", "yahoo.ca",
-    "yahoo.com.au", "yahoo.co.nz", "yahoo.co.jp", "yahoo.tl",
-    "ymail.com", "rocketmail.com"
-]
+SMTP_RELAY_DOMAINS = []
 
 # Domains that are known to block SMTP verification and have no viable relay path
 SMTP_BLOCKED_DOMAINS = []
