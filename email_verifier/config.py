@@ -89,26 +89,33 @@ SMTP_RELAY_DOMAINS = []
 # Domains that are known to block SMTP verification and have no viable relay path
 SMTP_BLOCKED_DOMAINS = []
 
-# Domains that are definitively NOT catch-all.
+# Domains that are definitively NOT catch-all AND can be verified via direct SMTP.
 # For these, the fake-email catch-all probe is skipped and is_catch_all is always False.
-# These are major providers known to reject non-existent addresses with 550.
+# These are major providers known to properly reject non-existent addresses with 550.
 NEVER_CATCH_ALL_DOMAINS = [
-    # Google
+    # Google — properly rejects non-existent addresses with 550
     "gmail.com", "googlemail.com",
-    # Apple
+    # Apple — properly rejects with 550
     "icloud.com", "me.com", "mac.com",
-    # Microsoft
+    # Microsoft — properly rejects with 550
     "outlook.com", "hotmail.com", "live.com", "msn.com",
     "protection.outlook.com", "office365.com",
-    # Yahoo
-    "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "yahoo.de",
-    "yahoo.es", "yahoo.fr", "yahoo.it", "yahoo.ca",
-    "yahoo.com.au", "yahoo.co.nz", "yahoo.co.jp",
-    "ymail.com", "rocketmail.com",
-    # Other major providers
+    # Other providers with proper rejection
     "protonmail.com", "proton.me",
     "zoho.com",
-    "aol.com",
     "yandex.com", "yandex.ru",
     "rediffmail.com"
+]
+
+# SMTP_ACCEPT_ALL_DOMAINS: Providers that return 250 OK for ALL RCPT TO commands
+# regardless of whether the mailbox exists (deferred bounce / greylisting behavior).
+# Yahoo, AOL etc. accept at SMTP time and bounce later via NDR.
+# These CANNOT be verified via direct SMTP — treat as catch-all / unverifiable.
+# To properly verify these, a relay with API access would be needed.
+SMTP_ACCEPT_ALL_DOMAINS = [
+    "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "yahoo.de",
+    "yahoo.es", "yahoo.fr", "yahoo.it", "yahoo.ca",
+    "yahoo.com.au", "yahoo.co.nz", "yahoo.co.jp", "yahoo.tl",
+    "ymail.com", "rocketmail.com",
+    "aol.com",
 ]

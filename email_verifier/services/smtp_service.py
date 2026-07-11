@@ -111,6 +111,23 @@ async def verify(email: str, mx_hosts: list, is_known_catch_all: bool) -> dict:
         res["is_mailbox_verified"] = None
         return res
 
+    # ----------------------------------------------------------------
+    # SMTP_ACCEPT_ALL_DOMAINS: Yahoo, AOL etc. return 250 OK for ALL RCPT TO
+    # commands regardless of whether the mailbox actually exists.
+    # They perform the real check asynchronously and send NDR bounces later.
+    # This makes direct SMTP verification impossible — treat as unverifiable.
+    # ----------------------------------------------------------------
+    if domain in config.SMTP_ACCEPT_ALL_DOMAINS:
+        res["is_catch_all"] = True
+        res["smtp_status"] = "unverifiable"
+        res["is_mailbox_verified"] = None
+        res["smtp_error_note"] = (
+            f"{domain} accepts all SMTP connections regardless of mailbox existence "
+            "(deferred bounce provider). Individual mailbox verification is not possible "
+            "via direct SMTP. Use a relay or third-party API to verify this address."
+        )
+        return res
+
     if not config.SMTP_RELAY_USE and not mx_hosts and not force_relay:
         return res
 

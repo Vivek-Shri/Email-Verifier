@@ -11,6 +11,9 @@ def get_status(signals: dict, score: int) -> dict:
         status = "invalid"
     elif signals.get("smtp_status") == "blocked":
         status = "blocked"
+    elif signals.get("smtp_status") == "unverifiable":
+        # Yahoo/AOL etc. — accept all SMTP, can't verify individual mailbox
+        status = "catch_all"
     elif signals.get("smtp_status") == "temporary_failure":
         status = "temporary_failure"
     elif signals.get("has_inbox_full"):
